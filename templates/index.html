@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pipeline Tracker</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0;
+           margin: 0; display: flex; justify-content: center; padding: 40px 16px; }
+    .card { background: #1e293b; border-radius: 12px; padding: 28px; max-width: 560px; width: 100%; }
+    h1 { margin-top: 0; font-size: 1.5rem; }
+    .badge { background: #16a34a; color: #fff; padding: 2px 10px; border-radius: 999px; font-size: .8rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    td { padding: 8px 0; border-bottom: 1px solid #334155; }
+    td:first-child { color: #94a3b8; width: 40%; }
+    code { color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Pipeline Tracker <span class="badge">healthy</span></h1>
+    <p>Shows exactly which build is running. These values are injected by the CI/CD pipeline.</p>
+    <table>
+      <tr><td>Version</td><td>{{ info.version }}</td></tr>
+      <tr><td>Commit</td><td><code>{{ info.commit }}</code></td></tr>
+      <tr><td>Built at</td><td>{{ info.built_at }}</td></tr>
+      <tr><td>Container ID</td><td>{{ info.hostname }}</td></tr>
+      <tr><td>Python</td><td>{{ info.python }}</td></tr>
+      <tr><td>Uptime</td><td id="uptime">{{ info.uptime }}</td></tr>
+    </table>
+  </div>
+  <script>
+    setInterval(async () => {
+      const res = await fetch('/api/info');
+      const data = await res.json();
+      document.getElementById('uptime').textContent = data.uptime;
+    }, 5000);
+  </script>
+</body>
+</html>
